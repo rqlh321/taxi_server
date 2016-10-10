@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="models.Area" table="area">
+        <id name="id" column="id" type="int">
+            <generator class="increment"/>
+        </id>
+        <property name="name" column="name" type="string" not-null="true"/>
+        <property name="lat" column="lat" type="float" not-null="true"/>
+        <property name="lon" column="lon" type="float" not-null="true"/>
+
+        <set name="drivers" table="driver">
+            <key>
+                <column name="id_area"/>
+            </key>
+            <one-to-many class="models.Driver"/>
+        </set>
+        <set name="orders" table="taxi_order">
+            <key>
+                <column name="id_area"/>
+            </key>
+            <one-to-many class="models.Order"/>
+        </set>
+    </class>
+</hibernate-mapping>

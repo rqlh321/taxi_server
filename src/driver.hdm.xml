@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="models.Driver" table="driver">
+        <id name="id" column="id" type="int">
+            <generator class="increment"/>
+        </id>
+        <property name="login" column="login" type="string"
+                  not-null="true"/>
+        <property name="password" column="password" type="string"
+                  not-null="true"/>
+        <property name="status" column="status" type="int"
+                  not-null="true"/>
+        <many-to-one name="area" class="models.Area">
+            <column name="id_area"/>
+        </many-to-one>
+        <one-to-one name="order" class="models.Order"/>
+    </class>
+</hibernate-mapping>

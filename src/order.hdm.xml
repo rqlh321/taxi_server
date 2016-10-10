@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="models.Order" table="orders">
+        <id name="id" column="id" type="int">
+            <generator class="increment"/>
+        </id>
+        <property name="status" column="status" type="int" not-null="true"/>
+        <property name="payment" column="payment" type="int" not-null="true"/>
+        <property name="address" column="address" type="string" not-null="true"/>
+        <many-to-one name="area" class="models.Area">
+            <column name="id_area"/>
+        </many-to-one>
+        <one-to-one name="driver" class="models.Driver"/>
+    </class>
+</hibernate-mapping>
