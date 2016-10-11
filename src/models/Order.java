@@ -1,7 +1,5 @@
 package models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 
 @Entity
@@ -13,14 +11,8 @@ public class Order {
     private int id;
     @Column(name = "status")
     private int status;
-    @OneToOne
-    private Driver driver;
-    @Column(name = "payment")
-    private int payment;
     @Column(name = "address")
     private String address;
-    @ManyToOne
-    private Area area;
 
     public Order() {
     }
@@ -33,20 +25,8 @@ public class Order {
         this.status = status;
     }
 
-    public void setDriver(Driver driver) {
-        this.driver = driver;
-    }
-
-    public void setPayment(int payment) {
-        this.payment = payment;
-    }
-
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public void setArea(Area area) {
-        this.area = area;
     }
 
     public int getId() {
@@ -58,19 +38,8 @@ public class Order {
         return status;
     }
 
-    public Driver getDriver() {
-        return driver;
-    }
-
-    public int getPayment() {
-        return payment;
-    }
-
     public String getAddress() {
         return address;
     }
 
-    public Area getArea() {
-        return area;
-    }
 }

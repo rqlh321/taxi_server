@@ -3,8 +3,8 @@ package models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "driver")
-public class Driver {
+@Table(name = "user")
+public class User {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,30 +13,17 @@ public class Driver {
     private String login;
     @Column(name = "password")
     private String password;
-    @Column(name = "status")
-    private int status;
-    @ManyToOne
-    private Area area;
+    @Column(name = "type")
+    private int type;
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Order getOrder() {
-
-        return order;
-    }
-
-    private Order order;
-
-    public Driver() {
+    public User() {
     }
 
     public String getLogin() {
         return login;
     }
 
-    public Driver(String login, String password) {
+    public User(String login, String password) {
         this.login = login;
         this.password = password;
     }
@@ -58,20 +45,12 @@ public class Driver {
         return password;
     }
 
-    public int getStatus() {
-        return status;
+    public int getType() {
+        return type;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public Area getArea() {
-        return area;
-    }
-
-    public void setArea(Area area) {
-        this.area = area;
+    public void setType(int type) {
+        this.type = type;
     }
 
     public void setLogin(String login) {

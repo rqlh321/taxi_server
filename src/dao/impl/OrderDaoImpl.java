@@ -1,22 +1,24 @@
 package dao.impl;
 
-import dao.interfaces.AreaDao;
+import dao.interfaces.OrderDao;
 import main.HibernateUtil;
-import models.Area;
-import models.Driver;
+import models.Order;
 import org.hibernate.Session;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class AreaDaoImpl implements AreaDao {
+/**
+ * Created by sic on 12.10.2016.
+ */
+public class OrderDaoImpl implements OrderDao {
     @Override
-    public void addArea(Area area) throws SQLException {
+    public void addOrder(Order order) throws SQLException {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
-            session.save(area);
+            session.save(order);
             session.getTransaction()
                     .commit();
         } catch (Exception e) {
@@ -29,12 +31,13 @@ public class AreaDaoImpl implements AreaDao {
     }
 
     @Override
-    public void deleteArea(Area area) throws SQLException {
+    public Order getOrder(int id) throws SQLException {
         Session session = null;
+        Order order = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
-            session.delete(area);
+            order = session.load(Order.class, id);
             session.getTransaction()
                     .commit();
         } catch (Exception e) {
@@ -44,16 +47,17 @@ public class AreaDaoImpl implements AreaDao {
                 session.close();
             }
         }
+        return order;
     }
 
     @Override
-    public Area getArea(int id) throws SQLException {
+    public List<Order> getOrders() throws SQLException {
+        List<Order> orders = null;
         Session session = null;
-        Area area = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
-            area = session.load(Area.class, id);
+            orders = session.createCriteria(Order.class).list();
             session.getTransaction()
                     .commit();
         } catch (Exception e) {
@@ -63,26 +67,7 @@ public class AreaDaoImpl implements AreaDao {
                 session.close();
             }
         }
-        return area;
+        return orders;
     }
 
-    @Override
-    public List<Area> getAreas() throws SQLException {
-        List<Area> areas = null;
-        Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction();
-            areas = session.createCriteria(Area.class).list();
-            session.getTransaction()
-                    .commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (session != null && session.isOpen()) {
-                session.close();
-            }
-        }
-        return areas;
-    }
 }

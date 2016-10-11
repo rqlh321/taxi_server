@@ -1,11 +1,11 @@
 package dao;
 
-import dao.impl.AreaDaoImpl;
-import dao.impl.DriverDaoImpl;
+import dao.impl.OrderDaoImpl;
+import dao.impl.UserDaoImpl;
 
 public class DaoFactory {
-    private static DriverDaoImpl driverDaoImpl = null;
-    private static AreaDaoImpl areaDaoImpl = null;
+    private static UserDaoImpl userDaoImpl = null;
+    private static OrderDaoImpl orderDaoImpl = null;
     private static DaoFactory instance = null;
 
     private DaoFactory() {
@@ -18,17 +18,17 @@ public class DaoFactory {
         return instance;
     }
 
-    public DriverDaoImpl getDriverDAOImpl() {
-        if (driverDaoImpl == null) {
-            driverDaoImpl = new DriverDaoImpl();
+    public UserDaoImpl getDriverDAOImpl() {
+        if (userDaoImpl == null) {
+            userDaoImpl = new UserDaoImpl();
         }
-        return driverDaoImpl;
+        return userDaoImpl;
     }
 
-    public AreaDaoImpl getAreaDAOImpl() {
-        if (areaDaoImpl == null) {
-            areaDaoImpl = new AreaDaoImpl();
+    public OrderDaoImpl getOrderDAOImpl() {
+        if (orderDaoImpl == null) {
+            orderDaoImpl = new OrderDaoImpl();
         }
-        return areaDaoImpl;
+        return orderDaoImpl;
     }
 }

@@ -12,8 +12,7 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.show_sql">true</property>
 
-        <mapping resource="driver.hdm.xml"/>
-        <mapping resource="area.hdm.xml"/>
+        <mapping resource="user.hdm.xml"/>
         <mapping resource="order.hdm.xml"/>
     </session-factory>
 </hibernate-configuration>

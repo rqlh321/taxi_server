@@ -4,11 +4,12 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="models.Order" table="taxi_order">
+    <class name="models.User" table="user">
         <id name="id" column="id" type="int">
             <generator class="increment"/>
         </id>
-        <property name="address" column="address" type="string" not-null="true"/>
-        <property name="status" column="status" type="int" not-null="true"/>
+        <property name="login" column="login" type="string" not-null="true"/>
+        <property name="password" column="password" type="string" not-null="true"/>
+        <property name="type" column="type" type="int" not-null="true"/>
     </class>
 </hibernate-mapping>

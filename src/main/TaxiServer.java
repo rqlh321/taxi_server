@@ -7,8 +7,9 @@ import java.sql.SQLException;
 
 public class TaxiServer {
     public static void main(String[] args) throws IOException, SQLException {
-        TaxiServer taxiServer = new TaxiServer();
-        taxiServer.runServer();
+       // TaxiServer taxiServer = new TaxiServer();
+       // taxiServer.runServer();
+        HibernateUtil.getSessionFactory();
     }
 
     private void runServer() throws IOException, SQLException {

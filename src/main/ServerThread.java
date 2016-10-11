@@ -2,8 +2,8 @@ package main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dao.DaoFactory;
-import models.Area;
-import models.Driver;
+import models.Order;
+import models.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +20,6 @@ public class ServerThread extends Thread {
     private String[] dividedClientMassage;
     private boolean holdAlive = true;
     private ObjectMapper mapper = new ObjectMapper();
-    private int driverId = -1;
 
     public ServerThread(Socket socket) throws IOException {
         this.socket = socket;
@@ -41,23 +40,14 @@ public class ServerThread extends Thread {
                         case "0"://login
                             login();
                             break;
-                        case "1"://logout
-                            logout();
+                        case "1"://login
+                            getOrders();
                             break;
                         case "2"://start execution
                             startExecution();
                             break;
                         case "3"://finish execution
                             finishExecution();
-                        case "4"://set my area
-                            setMyArea();
-                            break;
-                        case "5"://get areas
-                            getAreas();
-                            break;
-                        case "6"://get drivers count in area
-                            countDriversInArea();
-                            break;
                     }
                 }
             }
@@ -67,13 +57,6 @@ public class ServerThread extends Thread {
             e.printStackTrace();
         } finally {
             try {
-                if (holdAlive) {
-                    try {
-                        DaoFactory.getInstance().getDriverDAOImpl().setStatus(driverId, 0);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -81,48 +64,27 @@ public class ServerThread extends Thread {
         }
     }
 
-    private void getAreas() throws SQLException, IOException {
-        List<Area> areaList = DaoFactory.getInstance().getAreaDAOImpl().getAreas();
-        String massage = mapper.writeValueAsString(areaList);
-        System.out.println("Sending server answer: " + massage);
-        output.println(massage);
-    }
-
-    private void setMyArea() throws SQLException {
-        int idArea = Integer.valueOf(dividedClientMassage[1]);
-        Area area = DaoFactory.getInstance().getAreaDAOImpl().getArea(idArea);
-        DaoFactory.getInstance().getDriverDAOImpl().setArea(driverId, area);
-        System.out.println("Водитель id: " + driverId + ", новый район: "+idArea);
+    private void getOrders() throws SQLException, IOException {
+        List<Order> orders = DaoFactory.getInstance().getOrderDAOImpl().getOrders();
+        output.println(mapper.writeValueAsString(orders));
     }
 
     private void finishExecution() throws SQLException {
         int id = Integer.valueOf(dividedClientMassage[1]);
-        DaoFactory.getInstance().getDriverDAOImpl().setStatus(id, 1);
     }
 
     private void startExecution() throws SQLException {
         int id = Integer.valueOf(dividedClientMassage[1]);
-        DaoFactory.getInstance().getDriverDAOImpl().setStatus(id, 2);
-        //TODO: set driver in order
-    }
-
-    private void logout() throws SQLException {
-        //driverId = Integer.valueOf(dividedClientMassage[1]);
-        DaoFactory.getInstance().getDriverDAOImpl().setStatus(driverId, 0);
-        System.out.println("User with id: " + driverId + " disconnected.");
-        holdAlive = false;
     }
 
     private void login() throws SQLException {
         String login = dividedClientMassage[1];
         String password = dividedClientMassage[2];
-        Driver driver = DaoFactory.getInstance().getDriverDAOImpl().getDriver(login);
-        if (driver != null) {
-            if (driver.getPassword().equals(password)) {
-                driverId = driver.getId();
-                DaoFactory.getInstance().getDriverDAOImpl().setStatus(driver.getId(), 1);
-                System.out.println("Sending server answer: 1:id");
-                output.println("1:" + driverId);
+        User user = DaoFactory.getInstance().getDriverDAOImpl().getUser(login);
+        if (user != null) {
+            if (user.getPassword().equals(password)) {
+                System.out.println("Sending server answer: 1");
+                output.println("1");
             } else {
                 System.out.println("Sending server answer: 0");
                 output.println("0");
@@ -133,10 +95,4 @@ public class ServerThread extends Thread {
         }
     }
 
-    private void countDriversInArea() throws SQLException {
-        int idArea = Integer.valueOf(dividedClientMassage[1]);
-        int count = DaoFactory.getInstance().getDriverDAOImpl().countDriversInArea(idArea);
-        System.out.println("Sending server answer: " + count);
-        output.println(count);
-    }
 }
