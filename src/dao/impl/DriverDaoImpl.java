@@ -144,7 +144,7 @@ public class DriverDaoImpl implements DriverDao {
             Driver driver = session.load(Driver.class, id);
             driver.setArea(area);
             session.update(driver);
-            area.getDrivers().add(driver);
+//            area.getDrivers().add(driver);
             session.getTransaction()
                     .commit();
         } catch (Exception e) {

@@ -88,8 +88,11 @@ public class ServerThread extends Thread {
         output.println(massage);
     }
 
-    private void setMyArea() {
-        int id = Integer.valueOf(dividedClientMassage[1]);
+    private void setMyArea() throws SQLException {
+        int idArea = Integer.valueOf(dividedClientMassage[1]);
+        Area area = DaoFactory.getInstance().getAreaDAOImpl().getArea(idArea);
+        DaoFactory.getInstance().getDriverDAOImpl().setArea(driverId, area);
+        System.out.println("Водитель id: " + driverId + ", новый район: "+idArea);
     }
 
     private void finishExecution() throws SQLException {
