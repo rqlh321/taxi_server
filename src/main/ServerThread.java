@@ -2,6 +2,7 @@ package main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dao.DaoFactory;
+import dao.impl.OrderDaoImpl;
 import models.Order;
 import models.User;
 
@@ -17,9 +18,17 @@ public class ServerThread extends Thread {
     private Socket socket;
     private BufferedReader input;
     private PrintStream output;
+
     private String[] dividedClientMassage;
     private boolean holdAlive = true;
     private ObjectMapper mapper = new ObjectMapper();
+
+    private final String CONFIRM = "1";
+    private final String REFUSE = "0";
+    private final String REQUEST_LOGIN = "0";
+    private final String REQUEST_GET_ORDERS = "1";
+    private final String REQUEST_START_EXECUTION = "2";
+    private final String REQUEST_FINISH_EXECUTION = "3";
 
     public ServerThread(Socket socket) throws IOException {
         this.socket = socket;
@@ -37,17 +46,18 @@ public class ServerThread extends Thread {
                     System.out.println("Client massage: " + clientMassage);
                     dividedClientMassage = clientMassage.split(":");
                     switch (dividedClientMassage[0]) {
-                        case "0"://login
+                        case REQUEST_LOGIN:
                             login();
                             break;
-                        case "1"://login
+                        case REQUEST_GET_ORDERS:
                             getOrders();
                             break;
-                        case "2"://start execution
+                        case REQUEST_START_EXECUTION:
                             startExecution();
                             break;
-                        case "3"://finish execution
+                        case REQUEST_FINISH_EXECUTION:
                             finishExecution();
+                            break;
                     }
                 }
             }
@@ -58,6 +68,8 @@ public class ServerThread extends Thread {
         } finally {
             try {
                 socket.close();
+                input.close();
+                output.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -71,10 +83,19 @@ public class ServerThread extends Thread {
 
     private void finishExecution() throws SQLException {
         int id = Integer.valueOf(dividedClientMassage[1]);
+        Order order = DaoFactory.getInstance().getOrderDAOImpl().getOrder(id);
+        DaoFactory.getInstance().getOrderDAOImpl().changeStatus(order, OrderDaoImpl.FINISHED);
     }
 
-    private void startExecution() throws SQLException {
+    private void startExecution() throws SQLException, IOException {
         int id = Integer.valueOf(dividedClientMassage[1]);
+        Order order = DaoFactory.getInstance().getOrderDAOImpl().getOrder(id);
+        if (order.getStatus() == OrderDaoImpl.FREE) {
+            DaoFactory.getInstance().getOrderDAOImpl().changeStatus(order, OrderDaoImpl.RUNTIME);
+            output.println(CONFIRM);
+        } else {
+            output.println(REFUSE);
+        }
     }
 
     private void login() throws SQLException {
@@ -83,15 +104,15 @@ public class ServerThread extends Thread {
         User user = DaoFactory.getInstance().getDriverDAOImpl().getUser(login);
         if (user != null) {
             if (user.getPassword().equals(password)) {
-                System.out.println("Sending server answer: 1");
-                output.println("1");
+                System.out.println("Sending server answer: confirm");
+                output.println(CONFIRM);
             } else {
-                System.out.println("Sending server answer: 0");
-                output.println("0");
+                System.out.println("Sending server answer: refuse");
+                output.println(REFUSE);
             }
         } else {
-            System.out.println("Sending server answer: 0");
-            output.println("0");
+            System.out.println("Sending server answer: refuse");
+            output.println(REFUSE);
         }
     }
 

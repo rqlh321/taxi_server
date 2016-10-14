@@ -12,6 +12,8 @@ public interface OrderDao {
 
     public void addOrder(Order order) throws SQLException;
 
+    public void changeStatus(Order order, int status) throws SQLException;
+
     public Order getOrder(int id) throws SQLException;
 
     public List<Order> getOrders() throws SQLException;
